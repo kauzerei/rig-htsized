@@ -1,0 +1,14 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "$fn": "64",
+            "dist": "60",
+            "gap": "3",
+            "r": "3",
+            "tolerance": "0.20000000000000001",
+            "tube": "16",
+            "wall": "3"
+        }
+    }
+}
