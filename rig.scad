@@ -11,8 +11,8 @@ r=3;
 a=0;
 module corner(type,r) {
   if (type=="none" || r==0) cube([0,0,0]);
-  if (type=="chamfer") sphere(r=r);
-  if (type=="fillet") for (i=[[0,0,0],[0,0,1]]) mirror(i) cylinder(r1=r,r2=0,h=r);
+  if (type=="fillet") sphere(r=r);
+  if (type=="chamfer") for (i=[[0,0,0],[0,0,1]]) mirror(i) cylinder(r1=r,r2=0,h=r);
 }
 module gen_cyl(d=1,h=1,type="none",r=r,center=false) {
   if (type=="none") cylinder(d=d,h=h,center=center);
@@ -26,14 +26,14 @@ d=max([d1+2*wall+2*tolerance,d2+2*wall+2*tolerance,]);
 pr=o/2+d1/4-d2/4;
 maxang=max([abs(a*(1-pr/o)-90),abs(a*(1-pr/o)-90)]);
 echo(maxang);
-maxh=(type=="chamfer")?(d-2*r)*sin(maxang)+(d-2*r)*cos(maxang)+2*r:
+maxh=(type=="fillet")?(d-2*r)*sin(maxang)+(d-2*r)*cos(maxang)+2*r:
 (type=="none")?d*sin(maxang)+d*cos(maxang):
 max([(d-2*r)*sin(maxang)+(d)*cos(maxang),(d)*sin(maxang)+(d-2*r)*cos(maxang)]);
 difference() {
 hull(){
 translate([o,0,0])gen_cyl(type=type,r=r,d=d,h=d,center=true);
 rotate([a,0,0])gen_cyl(type=type,r=r,d=d,h=d,center=true);
-#rotate([a*(1-pr/o)-90,0,0])translate([pr,0,0])gen_cyl(type=type,r=(type=="chamfer")?r:0,d=(type=="chamfer")?2*screw+2*r:2*screw,h=maxh,center=true);
+#rotate([a*(1-pr/o)-90,0,0])translate([pr,0,0])gen_cyl(type=type,r=(type=="fillet")?r:0,d=(type=="fillet")?2*screw+2*r:2*screw,h=maxh,center=true);
 }
 translate([o,0,0])cylinder(d=d2+2*tolerance,h=2*d,center=true);
 rotate([a,0,0])cylinder(d=d1+2*tolerance,h=2*d,center=true);
@@ -42,4 +42,4 @@ rotate([90+a*(1-pr/o),0,0])translate([pr,0,0])cylinder(d=screw,h=2*d,center=true
 if(cutview)translate([pr,-50,-50])cube([100,100,100]);
 }
 }
-angle(d1=tube,d2=tube,o=tube+2*wall,a=a,type="chamfer",r=r,wall=wall,tolerance=tolerance);
+angle(d1=tube,d2=tube,o=tube+2*wall,a=a,type="none",r=r,wall=wall,tolerance=tolerance);
