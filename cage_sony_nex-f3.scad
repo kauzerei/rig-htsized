@@ -1,4 +1,5 @@
 use<polyround.scad>
+use<cage.scad>
 $fs=1/1;
 $fa=1/1;
 bissl=1/100;
@@ -45,9 +46,11 @@ function polyinterpolator(p) = [for (i=[0:len(p)-1]) each interpolator(p[i],p[i<
 function distance(point,polygon)= len(polygon)>0?min([for (p=polyinterpolator(polygon)) norm(p-point)]):10000;
 
 module camera() {
-  translate([-5.8,-19,25.5])rotate([0,0,-90])import("cameras/Olympus_E-PM1.stl",convexity=6);
+difference(){
+translate([17.5,-13.8,25.2])rotate([0,0,90])import("cameras/Sony_NEX-F3.stl",convexity=6);
+translate([-100,-100,-10])cube([200,200,10]);}
 }
-
+/*
 module hole(wall,depth) {
   translate([0,0,-bissl]) cylinder(d=bolt_d,h=wall+2*bissl);
   translate([0,0,-bissl]) cylinder(d=nut_d,h=wall-depth+bissl,$fn=6);
@@ -141,7 +144,7 @@ module cage() {
   difference() {
     translate([0,0,-bottom])mirror([0,0,1])rotate([0,0,0]) cage_wall(shape_bottom,cutouts_bottom,wall_bottom,chamfer);
     translate([0,0,-bottom])mirror([0,0,1])rotate([0,0,0]) wall_holes(shape_bottom,cutouts_bottom,wall_bottom,raster,min_hole_distance,[0,5.5]);
-    children();
+    camera();
   }
   connectors();
 }
@@ -168,7 +171,7 @@ module connectors() { //those corner parts that connect 4 sides of the cage toge
     #corner(param[0],param[1],param[2],param[3]);
     four_walls();
   }
-*/  
+ 
   for (lr=[[-left-wall_left+chamfer,-left+chamfer],[right-chamfer,right+wall_right-chamfer]])
     for (bt=[[-bottom-wall_bottom+chamfer,-bottom+chamfer],[top-chamfer,top+wall_top-chamfer]])
       hull() intersection() {
@@ -193,7 +196,7 @@ module roof() {
     }
   }
 }
-*/
+*/ 
 if(markers && $preview)camera();
 if(markers && $preview)%cage();
 else cage() camera();
