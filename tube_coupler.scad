@@ -1,14 +1,14 @@
-$fn=64;
+$fs=1/1;
+$fa=1/1;
 cutview=false;
+rounding_type="chamfer";//[fillet,chamfer,none]
+rounding_amount=2;
+meeting_angle=45;
 tube=16;
 wall=3;
-gap=3;
 screw=5;
-nut=[10,4,6]; //[8,5,64];
 tolerance=0.2;
 dist=60;
-r=3;
-a=0;
 module corner(type,r) {
   if (type=="none" || r==0) cube([0,0,0]);
   if (type=="fillet") sphere(r=r);
@@ -33,7 +33,7 @@ difference() {
 hull(){
 translate([o,0,0])gen_cyl(type=type,r=r,d=d,h=d,center=true);
 rotate([a,0,0])gen_cyl(type=type,r=r,d=d,h=d,center=true);
-#rotate([a*(1-pr/o)-90,0,0])translate([pr,0,0])gen_cyl(type=type,r=(type=="fillet")?r:0,d=(type=="fillet")?2*screw+2*r:2*screw,h=maxh,center=true);
+rotate([a*(1-pr/o)-90,0,0])translate([pr,0,0])gen_cyl(type=type,r=(type=="fillet")?r:0,d=(type=="fillet")?2*screw+2*r:2*screw,h=maxh,center=true);
 }
 translate([o,0,0])cylinder(d=d2+2*tolerance,h=2*d,center=true);
 rotate([a,0,0])cylinder(d=d1+2*tolerance,h=2*d,center=true);
@@ -42,4 +42,4 @@ rotate([90+a*(1-pr/o),0,0])translate([pr,0,0])cylinder(d=screw,h=2*d,center=true
 if(cutview)translate([pr,-50,-50])cube([100,100,100]);
 }
 }
-angle(d1=tube,d2=tube,o=tube+2*wall,a=a,type="none",r=r,wall=wall,tolerance=tolerance);
+angle(d1=tube,d2=tube,o=tube+2*wall,a=meeting_angle,type=rounding_type,r=rounding_amount,wall=wall,tolerance=tolerance);

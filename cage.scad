@@ -28,7 +28,7 @@ function polyinterpolator(p) = [for (i=[0:len(p)-1]) each interpolator(p[i],p[i<
 function distance(point,polygon)= min([for (p=polyinterpolator(polygon)) norm(p-point)]);
 
 module camera() {
-translate([-3,-18,27])rotate([1,180,-90])import("oly.stl",convexity=6);
+translate([-5.8,-19,25.5])rotate([0,0,-90])import("oly.stl",convexity=6);
 }
 
 shape_left=[
@@ -91,7 +91,7 @@ module cage_wall(shape,cutouts,wall,chamfer) {
         polygon( polyRound(shape) );
         polygon( polyRound(cutouts) );
       }
-      translate([0,0,wall-chamfer])roof(method="straight")difference() {
+      translate([0,0,wall-chamfer])roof()difference() {
         polygon( polyRound(shape) );
         polygon( polyRound(cutouts) );
       }
@@ -158,6 +158,21 @@ module connectors() {
     four_walls();
   }
 }
+
+module roof() {
+  maxdist=max(wall_left,wall_right,wall_top,wall_bottom);
+  difference(){
+    linear_extrude(height=maxdist,convexity=3) children();
+    minkowski(convexity=3) {
+      cylinder(d1=0,d2=maxdist*2,h=maxdist);
+      linear_extrude(1/100,convexity=3)difference() {
+        offset(r=1/100)children();
+        children();
+      }
+    }
+  }
+}
+
 //
-*camera();
+#camera();
 cage();
