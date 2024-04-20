@@ -7,7 +7,6 @@
             "chamfer": "1",
             "depth": "2",
             "left": "60",
-            "markers": "true",
             "min_hole_distance": "4",
             "nut_d": "8",
             "raster": "10",
@@ -17,9 +16,9 @@
             "wall_left": "6",
             "wall_right": "6",
             "wall_top": "6",
-            "x": "0",
+            "x": "72",
             "y": "0",
-            "z": "0"
+            "z": "47"
         },
         "New set 2": {
             "bolt_d": "4",
@@ -39,27 +38,7 @@
             "wall_top": "6",
             "x": "0",
             "y": "0",
-            "z": "69"
-        },
-        "New set 3": {
-            "bolt_d": "4",
-            "bottom": "-3",
-            "chamfer": "1",
-            "depth": "2",
-            "left": "60",
-            "markers": "true",
-            "min_hole_distance": "4",
-            "nut_d": "8",
-            "raster": "10",
-            "right": "63",
-            "top": "67",
-            "wall_bottom": "9",
-            "wall_left": "6",
-            "wall_right": "6",
-            "wall_top": "6",
-            "x": "0",
-            "y": "0",
-            "z": "76"
+            "z": "0"
         }
     }
 }

@@ -27,7 +27,7 @@ depth=2; //thickness of part of the wall, that holds the nut
 raster=10; //distance between rows and columns of holes
 
 /* [helping_tools:] */
-markers=true;
+markers=false;
 
 x=0;//[-100:1:100]
 y=0;//[-100:1:100]
@@ -92,7 +92,6 @@ cutout_top=[
 placement_top=[[0,0,top],[0,0,0],[0,0,0]];
 raster_shift_top=[0,5.5];
 
-
 shape_bottom=[
   [-left,-18,chamfer],
   [-left,13,chamfer],
@@ -105,17 +104,7 @@ for(a=[0:12:360]) [sin(a)*4,cos(a)*4,0]
 placement_bottom=[[0,0,-bottom],[0,0,1],[0,0,0]];
 raster_shift_bottom=[0,5.5];
 
-difference() {
-cage(shapes=[shape_left,shape_right,shape_top,shape_bottom],
-     cutouts=[cutout_left,cutout_right,cutout_top,cutout_bottom],
-     placements=[placement_left,placement_right,placement_top,placement_bottom],
-     walls=[wall_left,wall_right,wall_top,wall_bottom],
-     raster_shifts=[raster_shift_left,raster_shift_right,raster_shift_top,raster_shift_bottom],
-     chamfer,raster,min_hole_distance);
-camera();
-}
-
-module cage_wall(shape,cutouts,wall,chamfer) {
+module cage_wall(shape,cutouts,wall,chamfer,markers) {
   intersection() {
     linear_extrude(height=wall,convexity=2) if (len(shape)>0) polygon( polyRound(shape) );
     union() {
@@ -143,26 +132,23 @@ module wall_holes(shape,cutouts,wall,raster,mindist,start) {
   for(x=[minx+start[0]:raster:maxx]) 
     for(y=[miny+start[1]:raster:maxy])
       if (distance([x,y],len(shape)>0?polyRound(shape):[])>=mindist && distance([x,y],len(cutouts)>0?polyRound(cutouts):[])>=mindist)
-        //translate([x,y,-bissl])cylinder(d=bolt_d,h=wall+2*bissl);
         translate([x,y,0])hole(wall,depth);
 }
 
-module cage(shapes,cutouts,placements,walls,raster_shifts,chamfer,raster,min_hole_distance,noholes=false) {
-  echo(shapes);
-  echo (len(shapes));
+module cage(shapes,cutouts,placements,walls,raster_shifts,chamfer,raster,min_hole_distance,noholes=false,markers=false) {
   for (i=[0:len(shapes)-1]) translate(placements[i][0]) mirror(placements[i][1])rotate(placements[i][2]) difference() {
-    cage_wall(shapes[i],cutouts[i],walls[i],chamfer);
+    cage_wall(shapes[i],cutouts[i],walls[i],chamfer,markers);
     if(!noholes)wall_holes(shapes[i],cutouts[i],walls[i],raster,min_hole_distance,raster_shifts[i]);
   }
   if(!noholes)connectors();
 
   module connectors() { //those corner parts that connect 4 sides of the cage together
-    for (lr=[[-left-wall_left+chamfer,-left+chamfer],[right-chamfer,right+wall_right-chamfer]])
-      for (bt=[[-bottom-wall_bottom+chamfer,-bottom+chamfer],[top-chamfer,top+wall_top-chamfer]])
-        hull() intersection() {
-          translate([lr[0],-100,bt[0]])cube([lr[1]-lr[0],200,bt[1]-bt[0]]);
-          cage(shapes=shapes,cutouts=cutouts,placements=placements,walls=walls,raster_shifts=raster_shifts,chamfer=chamfer,raster=raster,min_hole_distance=min_hole_distance,noholes=true);
-        }
+    for (i=[0:len(shapes)-1]) hull() intersection () {
+      nexti=i+1<len(shapes)?i+1:0;
+      translate(placements[i][0]) mirror(placements[i][1])rotate(placements[i][2]) translate([-150,-150,-chamfer])cube([300,300,walls[i]]);
+      translate(placements[nexti][0]) mirror(placements[nexti][1])rotate(placements[nexti][2]) translate([-150,-150,-chamfer])cube([300,300,walls[nexti]]);
+      cage(shapes=shapes,cutouts=cutouts,placements=placements,walls=walls,raster_shifts=raster_shifts,chamfer=chamfer,raster=raster,min_hole_distance=min_hole_distance,noholes=true);
+    }
   }
 }
 
@@ -183,7 +169,22 @@ module roof() {
   }
 }
 */
-//if(markers && $preview)camera();
-//if(markers && $preview)%cage();
-//else cage() camera();
-
+if(markers && $preview)camera();
+if(markers && $preview)%difference() {
+cage(shapes=[shape_left,shape_top,shape_right,shape_bottom],
+     cutouts=[cutout_left,cutout_top,cutout_right,cutout_bottom],
+     placements=[placement_left,placement_top,placement_right,placement_bottom],
+     walls=[wall_left,wall_top,wall_right,wall_bottom],
+     raster_shifts=[raster_shift_left,raster_shift_top,raster_shift_right,raster_shift_bottom],
+     chamfer,raster,min_hole_distance,false,markers);
+camera();
+}
+else difference() {
+cage(shapes=[shape_left,shape_top,shape_right,shape_bottom],
+     cutouts=[cutout_left,cutout_top,cutout_right,cutout_bottom],
+     placements=[placement_left,placement_top,placement_right,placement_bottom],
+     walls=[wall_left,wall_top,wall_right,wall_bottom],
+     raster_shifts=[raster_shift_left,raster_shift_top,raster_shift_right,raster_shift_bottom],
+     chamfer,raster,min_hole_distance,false,markers);
+camera();
+}
