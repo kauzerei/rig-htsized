@@ -1,0 +1,25 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "bolt_d": "4",
+            "bottom": "-3",
+            "chamfer": "1",
+            "depth": "2",
+            "left": "60",
+            "markers": "true",
+            "min_hole_distance": "4",
+            "nut_d": "8",
+            "raster": "10",
+            "right": "63",
+            "top": "67",
+            "wall_bottom": "9",
+            "wall_left": "6",
+            "wall_right": "6",
+            "wall_top": "6",
+            "x": "0",
+            "y": "0",
+            "z": "0"
+        }
+    }
+}
