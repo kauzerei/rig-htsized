@@ -28,7 +28,7 @@ depth=2; //thickness of part of the wall, that holds the nut
 raster=10; //distance between rows and columns of holes
 
 /* [helping_tools:] */
-markers=true;
+markers=false;
 
 x=0;//[-100:1:100]
 y=0;//[-100:1:100]
@@ -48,9 +48,7 @@ translate([-100,-100,-10])cube([200,200,10]);}
 }
 
 shape_left=[
-  [25,-bottom,chamfer],
-  [25,10,10],
-  [30,15,10],
+  [30,-bottom,chamfer],
 //  [30,58,10],
   [30,top,chamfer],
   [-13,top,chamfer],
@@ -96,8 +94,8 @@ raster_shift_top=[2,6.5];
 
 shape_bottom=[
   [-left,-13,10],
-  [-left,25,chamfer],
-  [-37,25,10],
+  [-left,30,chamfer],
+  [-37,30,10],
   [-30,18,10],
   [33,18,10],
   [40,13,10],
