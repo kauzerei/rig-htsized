@@ -43,7 +43,7 @@ if(markers && $preview)#translate([x,y,z])union(){
 
 module camera() {
 difference(){
-translate([17.5,-13.8,25.2])rotate([0,0,90])import("cameras/Sony_NEX-F3.stl",convexity=6);
+scale([1.01,1.01,1.01])translate([17.5,-13.8,25.2])rotate([0,0,90])import("cameras/Sony_NEX-F3.stl",convexity=6);
 translate([-100,-100,-10])cube([200,200,10]);}
 }
 
@@ -64,15 +64,15 @@ raster_shift_left=[8,-3];
 shape_right=[
   [13,-bottom,chamfer],
   [13,top,chamfer],
-  [-7,top,chamfer],
-  [-7,55,5],
+  [-13,top,chamfer],
+  [-13,55,5],
   [-13,52,5],
   [-13,-bottom,chamfer],
 ];
 cutout_right=[
 ];
 placement_right=[[right,0,0],[0,0,0],[90,0,90]];
-raster_shift_right=[5.5,-3];
+raster_shift_right=[8,-3];
 
 shape_top=[
   [-left,-13,chamfer],
@@ -81,16 +81,16 @@ shape_top=[
   [-20,20,10],
   [18,20,10],
   [30,-1,10],
-  [55,-1,10],
+  [64,-1,10],
+  [74,13,5],
   [right,13,chamfer],
-  [right,-7,chamfer],
-  [64,-7,10],
+  [right,-13,chamfer],
   [55,-13,10],
 ];
 cutout_top=[
 ];
 placement_top=[[0,0,top],[0,0,0],[0,0,0]];
-raster_shift_top=[2,6.5];
+raster_shift_top=[2,6];
 
 shape_bottom=[
   [-left,-13,10],
