@@ -1,0 +1,31 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "bar_position": "low",
+            "bar_thickness": "6",
+            "bcd": "10",
+            "center_to_center": "60",
+            "coupling": "false",
+            "d_bolt": "4",
+            "d_circle": "2",
+            "d_nut": "8",
+            "d_tube": "16",
+            "h_nut": "3",
+            "h_ring": "16",
+            "hole_distance": "10",
+            "invert_nut_side": "false",
+            "maxlens": "82",
+            "mount_object": "down",
+            "n_holes": "3",
+            "n_screws": "4",
+            "nut": "true",
+            "offset": "1",
+            "part": "double_clamp",
+            "range": "30",
+            "tightener_facing": "side",
+            "wall": "3",
+            "width": "20"
+        }
+    }
+}

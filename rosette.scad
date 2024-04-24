@@ -1,9 +1,9 @@
 //Arri-Rosette-type Hirth joint. It does mesh perfectly with itself unlike some other designs on Thingiverse. To the best of my knowledge it follows exactly the shape of the real deal, but I'm too poor to actually purcase an Arri product to check.
 //I use it to mount to narrow parts with cylindrical-headed screws. I'll make a standard rosette with countersunk holes some day
 //thickness of the mounting plane underneath the joint
-thickness=1;
+thickness=0.5;
 //vertical distance between mounting plate and lowest point of teeth, place for head of a screw
-screw_head_space=2;
+screw_head_space=3;
 //diameter of lowered part
 screw_side_space_diameter=16;
 //diameter of mounting circle
@@ -14,6 +14,10 @@ n_screws=4;
 d_center=4;
 //diameter of mounting holes
 d_circle=4;
+//diameter of screw head
+d_head=9;
+//conical/cylindrical screw head switch
+cylindrical=false;
 //STANDARD IS 60, other numbers are not Arri-conpatible. Number of detents
 hirth_n=60;
 //STANDARD IS 32, diameter
@@ -23,6 +27,14 @@ $fs=1/2;
 bissl=1/100;
 use <include/hirth.scad>
 height=hirth_height(hirth_d/cos(180/hirth_n),hirth_n,90);
+module screw_space(cylindrical=cylindrical) {
+  if (cylindrical) {cylinder(d=d_circle,h=100,center=true); cylinder(d=d_head,h=100);}
+  else {
+    cylinder(d=d_circle,h=100,center=true);
+    cylinder(d1=d_circle,d2=d_head, h=(d_head-d_circle)/2);
+    translate([0,0,(d_head-d_circle)/2-bissl]) cylinder(d=d_head, h=screw_head_space);
+  }
+}
 module arri_rosette(thickness=1.5,screw_head_space=1,screw_side_space_diameter=16,bcd=12,n_screws=4,d_center=4,d_circle=2.5,hirth_n=30,hirth_d=32) {
   difference() {
     union() {
@@ -33,10 +45,7 @@ module arri_rosette(thickness=1.5,screw_head_space=1,screw_side_space_diameter=1
       cylinder(h=thickness+screw_head_space,d=hirth_d,$fn=hirth_n);
     }
     translate([0,0,thickness]) cylinder(d=screw_side_space_diameter,h=screw_head_space+hirth_height(hirth_d/cos(180/hirth_n),hirth_n,90));
-    for (i=[0:360/n_screws:360-360/n_screws]) rotate([0,0,i])translate([bcd/2,0,-bissl]) {
-      cylinder(h=thickness+bissl,d=d_circle);
-      translate([0,0,thickness]) cylinder(d1=d_circle,d2=d_circle*3,h=d_circle);
-    }
+    for (i=[0:360/n_screws:360-360/n_screws]) rotate([0,0,i])translate([bcd/2,0,thickness]) screw_space(cylindrical=cylindrical);
     translate([0,0,-0.01]) cylinder(h=thickness+0.02,d=d_center);
   }
 }
