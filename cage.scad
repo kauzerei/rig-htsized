@@ -60,7 +60,7 @@ shape_left = [
   [ -20, top, chamfer ],
   [ -20, -bottom, chamfer ]
 ];
-cutout_left = [];
+cutout_left = [[]];
 placement_left = [
   [ -left, 0, 0 ], [ 1, 0, 0 ], [ 90, 0, 90 ]
 ]; // translate(), mirror(), and rotate() arguments for wall
@@ -72,7 +72,7 @@ shape_right = [
   [ -20, top, chamfer ],
   [ -20, -bottom, chamfer ],
 ];
-cutout_right = [];
+cutout_right = [[]];
 placement_right = [[right, 0, 0], [0, 0, 0], [90, 0, 90]];
 raster_shift_right = [ 0, 0 ];
 
@@ -82,7 +82,7 @@ shape_top = [
   [ right, 20, chamfer ],
   [ right, -20, chamfer ],
 ];
-cutout_top = [];
+cutout_top = [[]];
 placement_top = [ [ 0, 0, top ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];
 raster_shift_top = [ 0, 0 ];
 
@@ -92,7 +92,8 @@ shape_bottom = [
   [ right, 20, chamfer ],
   [ right, -20, chamfer ]
 ];
-cutout_bottom = [for (a = [0:12:360])[sin(a) * 4, cos(a) * 4, 0]];
+//cutout_bottom = [[for (a = [0:12:360])[sin(a) * 4, cos(a) * 4, 0]]];
+cutout_bottom = [[]];
 placement_bottom = [ [ 0, 0, -bottom ], [ 0, 0, 1 ], [ 0, 0, 0 ] ];
 raster_shift_bottom = [ 0, 0 ];
 
@@ -141,14 +142,14 @@ module cage_wall(shape, cutouts, wall, chamfer, markers) {
       linear_extrude(height = wall - chamfer) difference() {
         if (len(shape) > 0)
           polygon(polyRound(shape));
-        if (len(cutouts) > 0)
-          polygon(polyRound(cutouts));
+        for (cutout=cutouts) if (len(cutout) > 0)
+          polygon(polyRound(cutout));
       }
       translate([ 0, 0, wall - chamfer ]) roof() difference() {
         if (len(shape) > 0)
           polygon(polyRound(shape));
-        if (len(cutouts) > 0)
-          polygon(polyRound(cutouts));
+        for (cutout=cutouts)if (len(cutout) > 0)
+          polygon(polyRound(cutout));
       }
     }
   }
@@ -162,16 +163,15 @@ module cage_wall(shape, cutouts, wall, chamfer, markers) {
 }
 
 module wall_holes(shape, cutouts, wall, raster, mindist, start) {
-  minx = min([ for (xy = shape) xy[0], for (xy = cutouts) xy[0] ]);
+  minx = min([ for (xy = shape) xy[0], for (cutout=cutouts) for (xy=cutout) xy[0] ]);
   maxx = max([ for (xy = shape) xy[0], for (xy = shape) xy[0] ]);
   miny = min([ for (xy = shape) xy[1], for (xy = shape) xy[1] ]);
   maxy = max([ for (xy = shape) xy[1], for (xy = shape) xy[1] ]);
   for (x = [minx + start[0]:raster:maxx])
     for (y = [miny + start[1]:raster:maxy])
-      if (distance([ x, y ], len(shape) > 0 ? polyRound(shape) : []) >=
-              mindist &&
-          distance([ x, y ], len(cutouts) > 0 ? polyRound(cutouts) : []) >=
-              mindist)
+      if ((distance([ x, y ], len(shape) > 0 ? polyRound(shape) : []) >= mindist) &&
+          (is_undef(cutouts[0])?true:distance([ x, y ], len(cutouts[0]) > 0 ? polyRound(cutouts[0]) : []) >= mindist) &&
+          (is_undef(cutouts[1])?true:distance([ x, y ], len(cutouts[1]) > 0 ? polyRound(cutouts[1]) : []) >= mindist) )
         translate([ x, y, 0 ]) hole(wall, depth);
 }
 

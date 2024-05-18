@@ -1,0 +1,16 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "cutview": "false",
+            "dist": "60",
+            "meeting_angle": "90",
+            "rounding_amount": "2",
+            "rounding_type": "chamfer",
+            "screw": "4",
+            "tolerance": "0.20000000000000001",
+            "tube": "16",
+            "wall": "3"
+        }
+    }
+}

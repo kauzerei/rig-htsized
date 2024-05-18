@@ -1,8 +1,9 @@
 // Instance of cage() for Olympus PEN E-PM1
 use<cage.scad>
-use<polyround.scad>
+use<include/polyround.scad>
 $fs = 1 / 1;
 $fa = 1 / 1;
+$fn=32;
 bissl = 1 / 100;
 
 chamfer = 1; // edges rounding
@@ -11,7 +12,7 @@ chamfer = 1; // edges rounding
 // origin (tripod screw center)
 /* [cage walls placement:] */
 left = 60;
-top = 67;
+top = 68;
 right = 63;
 bottom = -3;
 
@@ -20,7 +21,7 @@ bottom = -3;
 wall_left = 6;
 wall_right = 6;
 wall_top = 6;
-wall_bottom = 9;
+wall_bottom = 13;
 
 /* [raster of holes:] */
 min_hole_distance = 4; // from center of the hole to the wall boundaries
@@ -28,6 +29,10 @@ bolt_d = 4;            // hole diameter
 nut_d = 8;             // place for inserting hexagonal nuts, corner-to-corner
 depth = 2;             // thickness of part of the wall, that holds the nut
 raster = 10;           // distance between rows and columns of holes
+
+tripod_thread_d = 7; //tripod screw
+tripod_head_d=12;
+tripod_head_h=4;
 
 /* [helping_tools:] */
 markers = false;
@@ -50,7 +55,7 @@ shape_left = [
   [ -18, top, chamfer ],
   [ -18, -bottom, chamfer ]
 ];
-cutout_left = [];
+cutout_left = [[]];
 placement_left = [
   [ -left, 0, 0 ], [ 1, 0, 0 ], [ 90, 0, 90 ]
 ]; // translate(), mirror(), and rotate() arguments for wall
@@ -58,7 +63,9 @@ raster_shift_left = [ 5.5, -3 ];
 
 shape_right = [
   [ 13, -bottom, chamfer ],
-  [ 13, top, chamfer ],
+  [ 13, 20, chamfer ],
+  [ 20, 30, chamfer ],
+  [ 20, top, chamfer ],
   [ -12, top, chamfer ],
   [ -12, 56, 5 ],
   [ -4, 48, 5 ],
@@ -66,25 +73,25 @@ shape_right = [
   [ -18, 12, 5 ],
   [ -18, -bottom, chamfer ],
 ];
-cutout_right = [];
+cutout_right = [[]];
 placement_right = [[right, 0, 0], [0, 0, 0], [90, 0, 90]];
-raster_shift_right = [ 5.5, -3 ];
+raster_shift_right = [ 1.5, -3 ];
 
 shape_top = [
   [ -left, -18, chamfer ],
   [ -left, 13, chamfer ],
-  [ 20, 13, 5 ],
-  [ 24, 20, 5 ],
+  [ 16, 13, 5 ],
+  [ 20, 20, 5 ],
   [ right, 20, chamfer ],
   [ right, -12, chamfer ],
   [ 30, -12, 5 ],
   [ 25, -18, 5 ],
 ];
-cutout_top = [ 
+cutout_top = [ [
   [ 26, -6, 2 ],
   [ 55, -6, 2 ],
   [ 55, 14, 2 ],
-  [ 26, 14, 2 ] ];
+  [ 26, 14, 2 ] ] ];
 placement_top = [ [ 0, 0, top ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];
 raster_shift_top = [ 0, 5.5 ];
 
@@ -94,7 +101,7 @@ shape_bottom = [
   [ right, 13, chamfer ],
   [ right, -18, chamfer ]
 ];
-cutout_bottom = [for (a = [0:12:360])[sin(a) * 4, cos(a) * 4, 0]];
+cutout_bottom = [[[12,8,2],[53,8,2],[53,-14,2],[12,-14,2]],[for (a = [0:12:360])[sin(a) * tripod_thread_d/2, cos(a) * tripod_thread_d/2, 0]]];
 placement_bottom = [ [ 0, 0, -bottom ], [ 0, 0, 1 ], [ 0, 0, 0 ] ];
 raster_shift_bottom = [ 0, 5.5 ];
 
@@ -124,4 +131,6 @@ else
          raster_shifts = [ raster_shift_left, raster_shift_top, raster_shift_right, raster_shift_bottom ],
          chamfer, raster, min_hole_distance, false, markers);
     camera();
+    translate([0,0,-bottom-wall_bottom-1/100])cylinder(d=tripod_head_d,h=tripod_head_h);
+    
   }

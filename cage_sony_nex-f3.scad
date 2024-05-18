@@ -1,6 +1,5 @@
 // Instance of cage() for Sony NEX-F3
 use<cage.scad>
-use<polyround.scad>
 $fs = 1 / 1;
 $fa = 1 / 1;
 bissl = 1 / 100;
@@ -60,7 +59,7 @@ shape_left = [
   [ 10, 55, 5 ],
   [ 10, -bottom, chamfer ]
 ];
-cutout_left = [];
+cutout_left = [[]];
 placement_left = [
   [ -left, 0, 0 ], [ 1, 0, 0 ], [ 90, 0, 90 ]
 ];
@@ -74,7 +73,7 @@ shape_right = [
   [ -13, 52, 5 ],
   [ -13, -bottom, chamfer ],
 ];
-cutout_right = [];
+cutout_right = [[]];
 placement_right = [[right, 0, 0], [0, 0, 0], [90, 0, 90]];
 raster_shift_right = [ 8, -3 ];
 
@@ -91,7 +90,7 @@ shape_top = [
   [ right, -13, chamfer ],
   [ 55, -13, 10 ],
 ];
-cutout_top = [];
+cutout_top = [[]];
 placement_top = [ [ 0, 0, top ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];
 raster_shift_top = [ 2, 6 ];
 
@@ -105,7 +104,7 @@ shape_bottom = [
   [ right, 13, chamfer ],
   [ right, -13, chamfer ]
 ];
-cutout_bottom = [for (a = [0:12:360])[sin(a) * 4, cos(a) * 4, 0]]; //tripod mount
+cutout_bottom = [[for (a = [0:12:360])[sin(a) * 4, cos(a) * 4, 0]]]; //tripod mount
 placement_bottom = [ [ 0, 0, -bottom ], [ 0, 0, 1 ], [ 0, 0, 0 ] ];
 raster_shift_bottom = [ 2, 6 ];
 
