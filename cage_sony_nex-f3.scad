@@ -19,7 +19,7 @@ bottom = -3;
 wall_left = 6;
 wall_right = 6;
 wall_top = 6;
-wall_bottom = 9;
+wall_bottom = 13;
 
 /* [raster of holes:] */
 min_hole_distance = 4; // from center of the hole to the wall boundaries
@@ -27,6 +27,10 @@ bolt_d = 4;            // hole diameter
 nut_d = 8;             // place for inserting hexagonal nuts, corner-to-corner
 depth = 2;             // thickness of part of the wall, that holds the nut
 raster = 10;           // distance between rows and columns of holes
+
+tripod_thread_d = 7; //tripod screw
+tripod_head_d=12;
+tripod_head_h=4;
 
 /* [helping_tools:] */
 markers = false;
@@ -104,7 +108,7 @@ shape_bottom = [
   [ right, 13, chamfer ],
   [ right, -13, chamfer ]
 ];
-cutout_bottom = [[for (a = [0:12:360])[sin(a) * 4, cos(a) * 4, 0]]]; //tripod mount
+cutout_bottom = [[for (a = [0:12:360])[sin(a) * tripod_thread_d/2, cos(a) * tripod_thread_d/2, 0]],[[50,-4,chamfer],[50,6,chamfer],[75,6,chamfer],[75,-4,chamfer]]]; //tripod mount
 placement_bottom = [ [ 0, 0, -bottom ], [ 0, 0, 1 ], [ 0, 0, 0 ] ];
 raster_shift_bottom = [ 2, 6 ];
 
@@ -129,4 +133,5 @@ else
          raster_shifts = [ raster_shift_left, raster_shift_top, raster_shift_right, raster_shift_bottom ],
          chamfer, raster, min_hole_distance, false, markers);
     camera();
+    translate([0,0,-bottom-wall_bottom-1/100])cylinder(d=tripod_head_d,h=tripod_head_h);
   }

@@ -3,7 +3,6 @@ use<cage.scad>
 use<include/polyround.scad>
 $fs = 1 / 1;
 $fa = 1 / 1;
-$fn=32;
 bissl = 1 / 100;
 
 chamfer = 1; // edges rounding
@@ -30,9 +29,9 @@ nut_d = 8;             // place for inserting hexagonal nuts, corner-to-corner
 depth = 2;             // thickness of part of the wall, that holds the nut
 raster = 10;           // distance between rows and columns of holes
 
-tripod_thread_d = 7; //tripod screw
-tripod_head_d=12;
-tripod_head_h=4;
+tripod_thread_d = 7; // tripod screw
+tripod_head_d = 12;
+tripod_head_h = 4;
 
 /* [helping_tools:] */
 markers = false;
@@ -44,15 +43,13 @@ z = 0; //[-100:1:100]
 // marker for finding right coordinates
 if (markers && $preview)
 #translate([ x, y, z ]) union() {
-    cube([ 1, 10, 1 ], center = true);
-    cube([ 10, 1, 1 ], center = true);
-    cube([ 1, 1, 10 ], center = true);
-  }
+  cube([ 1, 10, 1 ], center = true);
+  cube([ 10, 1, 1 ], center = true);
+  cube([ 1, 1, 10 ], center = true);
+}
 
 shape_left = [
-  [ 13, -bottom, chamfer ],
-  [ 13, top, chamfer ], 
-  [ -18, top, chamfer ],
+  [ 13, -bottom, chamfer ], [ 13, top, chamfer ], [ -18, top, chamfer ],
   [ -18, -bottom, chamfer ]
 ];
 cutout_left = [[]];
@@ -87,11 +84,7 @@ shape_top = [
   [ 30, -12, 5 ],
   [ 25, -18, 5 ],
 ];
-cutout_top = [ [
-  [ 26, -6, 2 ],
-  [ 55, -6, 2 ],
-  [ 55, 14, 2 ],
-  [ 26, 14, 2 ] ] ];
+cutout_top = [[ [ 26, -6, 2 ], [ 55, -6, 2 ], [ 55, 14, 2 ], [ 26, 14, 2 ] ]];
 placement_top = [ [ 0, 0, top ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];
 raster_shift_top = [ 0, 5.5 ];
 
@@ -101,7 +94,11 @@ shape_bottom = [
   [ right, 13, chamfer ],
   [ right, -18, chamfer ]
 ];
-cutout_bottom = [[[12,8,2],[53,8,2],[53,-14,2],[12,-14,2]],[for (a = [0:12:360])[sin(a) * tripod_thread_d/2, cos(a) * tripod_thread_d/2, 0]]];
+cutout_bottom = [
+  [ [ 12, 8, 2 ], [ 53, 8, 2 ], [ 53, -14, 2 ], [ 12, -14, 2 ] ],
+  [for (a = [0:12:360])[sin(a) * tripod_thread_d / 2,
+                        cos(a) * tripod_thread_d / 2, 0]]
+];
 placement_bottom = [ [ 0, 0, -bottom ], [ 0, 0, 1 ], [ 0, 0, 0 ] ];
 raster_shift_bottom = [ 0, 5.5 ];
 
@@ -131,6 +128,6 @@ else
          raster_shifts = [ raster_shift_left, raster_shift_top, raster_shift_right, raster_shift_bottom ],
          chamfer, raster, min_hole_distance, false, markers);
     camera();
-    translate([0,0,-bottom-wall_bottom-1/100])cylinder(d=tripod_head_d,h=tripod_head_h);
-    
+    translate([ 0, 0, -bottom - wall_bottom - 1 / 100 ])
+        cylinder(d = tripod_head_d, h = tripod_head_h);
   }
