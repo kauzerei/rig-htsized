@@ -11,11 +11,10 @@
 $fa = 1 / 1;
 $fs = 1 / 2;
 bissl = 1 / 100;
-part =
-    "single_clamp"; //[double_clamp,double_clamp_side,double_clamp_double_mount,lens_suppoprt_clamp,lens_support]
+part = "single_clamp";//[double_clamp,double_clamp_side,double_clamp_double_mount,lens_suppoprt_clamp,lens_support]
 /* [hardware size] */
-d_tube = 16;
-h_ring = 16;
+d_tube = 15;
+h_ring = 10;
 d_bolt = 4;
 d_nut = 8;
 h_nut = 3;
@@ -38,8 +37,7 @@ maxlens = 82;
 /* [part shape tweaks] */
 nut = true;
 invert_nut_side = false;
-tightener_facing =
-    "up"; //[down,side,diagonally_up,diagonally_down,diagonally_inwards]
+tightener_facing = "up"; //[down,side,diagonally_up,diagonally_down,diagonally_inwards]
 angle = tightener_facing == "up"                   ? 180
         : tightener_facing == "diagonally_up"      ? 135
         : tightener_facing == "side"               ? 90

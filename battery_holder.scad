@@ -80,10 +80,12 @@ module holder() {
       spring();
   spring();
 }
+
 module holders(n) {
   for (i = [0:n - 1])
     translate([ 0, i * (battery_d + wall), 0 ]) holder();
 }
+
 difference() {
   holders(2);
   for (x = [12.5:20:60])
