@@ -4,7 +4,9 @@ $fn = 64;
 bissl = 1 / 100;
 alot = 200 / 1;
 
-tube = 16;      // rod outer diameter
+part="single_clamp_straight";//[single_clamp_straight,double_clamp,spacer]
+
+tube = 15;      // rod outer diameter
 wall_round = 3; // thin wall of the clamping part itself
 wall = 6;       // thicker wall, that needs to hold nuts (of threaded inserts)
 part_thickness = 12; // how wide the clamping ring is
@@ -13,12 +15,15 @@ tube_to_bolt = 4;    // extra distance from tube to the clamping screw
 skew = 30;           // andle at which the part is skewed
 
 min_hole_distance = 4; // from center of the hole to the wall boundaries
-bolt_d = 4;            // hole diameter
+bolt_d = 4.5;            // hole diameter
 nut_d = 8;             // place for inserting hexagonal nuts, corner-to-corner
 depth = 2;             // thickness of part of the wall, that holds the nut
 raster = 10;           // distance between rows and columns of holes
+spacer_skew=22;
+spacer_height = 30;
+spacer_thickness=9;
 
-module clamp(tube, wall_round, wall, part_thickness, tube_to_bolt, bolt_d,
+module clamp(tube, wall_round, wall, part_thickness, tube_to_bolt, bolt_d, skew = skew,
              negative = false) {
   width =
       (tube + 2 * wall_round) / cos(skew) - part_thickness * tan(skew) + bissl;
@@ -51,14 +56,14 @@ module hole(wall = wall, depth = depth) {
 }
 
 module single_clamp(tube, wall_round, wall, part_thickness, tube_to_bolt,
-                    bolt_d) {
+                    bolt_d,skew) {
   difference() {
     clamp(tube = tube, wall_round = wall_round, wall = wall,
           part_thickness = part_thickness, tube_to_bolt = tube_to_bolt,
-          bolt_d = bolt_d);
+          bolt_d = bolt_d, skew = skew);
     clamp(tube = tube, wall_round = wall_round, wall = wall,
           part_thickness = part_thickness, tube_to_bolt = tube_to_bolt,
-          bolt_d = bolt_d, negative = true);
+          bolt_d = bolt_d, skew = skew, negative = true);
   }
 }
 
@@ -81,7 +86,7 @@ module bridge(wall_bridge, nuts = true) {
   }
 }
 
-module double_clamp() {
+module double_clamp(skew = skew) {
   difference() {
     union() {
       translate([ -rod_distance / 2, 0, 0 ])
@@ -105,4 +110,28 @@ module double_clamp() {
               bolt_d = bolt_d, negative = true);
   }
 }
-double_clamp();
+
+module spacer(spacer_height=spacer_height, spacer_thickness=spacer_thickness, skew = skew) {
+  intersection() {
+    cube([ alot, alot, spacer_thickness ], center = true);
+    rotate([skew,0,0]) difference() {
+      hull() {
+        translate([-rod_distance/2,0,0]) cylinder (d=spacer_height, h=alot,center=true);
+        translate([rod_distance/2,0,0]) cylinder (d=spacer_height, h=alot,center=true);
+      }
+      hull() {
+        translate([-rod_distance/2,0,0]) cylinder (d=spacer_height-2*wall, h=alot,center=true);
+        translate([rod_distance/2,0,0]) cylinder (d=spacer_height-2*wall, h=alot,center=true);
+      }
+      for (x=[-raster:raster:raster]) for (z=[-2.5*raster:raster:3*raster]) translate([x,0,z]) {
+        rotate([90,0,0])cylinder(d=bolt_d,h=alot,center=true);
+        rotate([90,0,0])translate([0,0,(spacer_height-2*wall)/2-bissl])cylinder(d=nut_d,h=wall-depth,$fn=6);
+      }
+    }
+  }
+}
+if (part=="single_clamp_straight")
+single_clamp(tube=tube, wall_round=wall_round, wall=wall, part_thickness=part_thickness, tube_to_bolt=1,
+                    bolt_d=bolt_d, skew = 0);
+if (part=="double_clamp") double_clamp(skew = skew);
+if (part=="spacer") spacer(spacer_height=spacer_height,spacer_thickness=spacer_thickness, skew = spacer_skew);
