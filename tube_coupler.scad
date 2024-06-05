@@ -6,8 +6,8 @@ rounding_amount = 1;
 meeting_angle = 90;
 tube = 16;
 wall = 3;
-screw = 4;
-nut=9;
+hole_d = 4.5;
+nut_d=9;
 nut_h=4;
 tolerance = 0.2;
 dist = 60;
@@ -61,7 +61,7 @@ module angle(d1 = 1, d2 = 1, o = 1, a = 90, type = none, r = 1, wall = wall,
           gen_cyl(type = type, r = r, d = d, h = d, center = true);
       rotate([ a * (1 - pr / o) - 90, 0, 0 ]) translate([ pr, 0, 0 ])
           gen_cyl(type = type, r = (type == "fillet") ? r : 0,
-                  d = (type == "fillet") ? 3 * screw + 2 * r : 3 * screw,
+                  d = (type == "fillet") ? 3 * hole_d + 2 * r : 3 * hole_d,
                   h = maxh, center = true);
     }
     translate([ o, 0, 0 ])
@@ -71,9 +71,9 @@ module angle(d1 = 1, d2 = 1, o = 1, a = 90, type = none, r = 1, wall = wall,
     rotate([ 0, 90, 0 ]) linear_extrude(height = o, twist = a, convexity = 2)
         rotate(a) square([ 2 * d, wall ], center = true);
     rotate([ 90 + a * (1 - pr / o), 0, 0 ]) translate([ pr, 0, 0 ])
-        cylinder(d = screw, h = 2 * d, center = true);
+        cylinder(d = hole_d, h = 2 * d, center = true);
            rotate([ 90 + a * (1 - pr / o), 0, 0 ]) translate([ pr, 0, maxh/2-nut_h ])
-        cylinder(d = nut, h = 2 * d, $fn=6);
+        cylinder(d = nut_d, h = 2 * d, $fn=6);
     if (cutview)
       translate([ pr, -50, -50 ]) cube([ 100, 100, 100 ]);
   }

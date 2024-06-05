@@ -26,7 +26,7 @@ wall_bottom = 9;
 
 /* [raster of holes:] */
 min_hole_distance = 4; // from center of the hole to the wall boundaries
-bolt_d = 4;            // hole diameter
+hole_d = 4.5;            // hole diameter
 nut_d = 8;             // place for inserting hexagonal nuts, corner-to-corner
 depth = 2;             // thickness of part of the wall, that holds the nut
 raster = 10;           // distance between rows and columns of holes
@@ -49,7 +49,7 @@ if (markers && $preview)
 module camera() {}
 
 module hole(wall, depth) {
-  translate([ 0, 0, -bissl ]) cylinder(d = bolt_d, h = wall + 2 * bissl);
+  translate([ 0, 0, -bissl ]) cylinder(d = hole_d, h = wall + 2 * bissl);
   translate([ 0, 0, -bissl ])
       cylinder(d = nut_d, h = wall - depth + bissl, $fn = 6);
 }

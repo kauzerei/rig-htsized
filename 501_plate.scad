@@ -36,8 +36,8 @@ front_stop_end = 14;
 /* [Cheeseplate raster] */
 nholes_across = 11;
 nholes_along = 3;
-d_bolt = 4;
-d_head = 8;
+hole_d = 4.5;
+nut_d = 8;
 $fa = 1 / 1;
 $fs = 1 / 2;
 bissl = 1 / 100;
@@ -69,8 +69,8 @@ module negative() {
   for (i = [ -10 * (nholes_along - 1) / 2, 0, 10 * (nholes_along - 1) / 2 ])
     for (j = [-10 * (nholes_across - 1) / 2:10:10 * (nholes_across - 1) / 2])
       translate([ j + length / 2, i + l_width / 2, 0 ]) {
-        cylinder(h = height + 3 * bissl, d = d_bolt);
-        cylinder(h = height - thickness, d = d_head);
+        cylinder(h = height + 3 * bissl, d = hole_d);
+        cylinder(h = height - thickness, d = nut_d);
       }
 }
 module cutout() {
