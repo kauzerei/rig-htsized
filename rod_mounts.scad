@@ -15,7 +15,7 @@ hole_d = 4.5;
 raster = 10;
 
 /* [rails parameters] */
-rod_distance = 60;
+rods_distance = 60;
 rod_d = 15;
 
 /* [spacer parameters:] */
@@ -77,11 +77,15 @@ module spacer(height = 35, width = 60, depth = 10, radius = 5, wall = 2,
   }
 }
 
-module double_clamp(rod_d = 15, rod_distance = 60, depth = 10, wall = 3,
+module double_clamp(rod_d = 15, rods_distance = 60, depth = 10, wall = 3,
                     nut_h = 4, nut_d = 8, hole_d = 4.5, offset = 10,
-                    raster = 10) {
+                    raster = 10, extraflat=true, short = false) {
   thickness = wall + nut_h;
   height = rod_d + 2 * wall;
+            mirror([ 0, 0, 0 ]) translate([ rods_distance / 2, 0, 0 ]) clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+        nut_d = nut_d, hole_d = hole_d, offset = offset, short = short);
+      mirror([ 1, 0, 0 ]) translate([ rods_distance / 2, 0, 0 ]) clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+        nut_d = nut_d, hole_d = hole_d, offset = offset, short = short);
   difference() {
     union() {
       hull() for (tr =
@@ -89,22 +93,20 @@ module double_clamp(rod_d = 15, rod_distance = 60, depth = 10, wall = 3,
                         [ 0, -offset / 2, height / 2 - thickness / 2 ],
                         [ 0, offset / 2, -height / 2 + thickness / 2 ],
                       ]) translate(tr)
-          cube([ rod_distance, depth, thickness ], center = true);
-      mirror([ 0, 0, 0 ]) translate([ rod_distance / 2, 0, 0 ]) clamp();
-      mirror([ 1, 0, 0 ]) translate([ rod_distance / 2, 0, 0 ]) clamp();
+          cube([ rods_distance, depth, thickness ], center = true);
     }
-    cube([ rod_distance + bissl, depth + offset, height - 2 * thickness ],
-         center = true);
+    flat=extraflat?(part_depth-nut_d)/2:0; //extra flat space for ease of printing.
+    translate([ -(rods_distance + bissl)/2, -(depth + offset + bissl)/2-flat, -(height - 2 * thickness)/2 ])cube([ rods_distance + bissl, depth + offset + bissl, height - 2 * thickness ]);
     // upper_holes
-    startx = (rod_distance / 2 - rod_d / 2 - wall - nut_d / 2) % raster -
-             (rod_distance / 2 - rod_d / 2 - wall - nut_d / 2);
-    for (x = [startx:raster:rod_distance / 2 - rod_d / 2 - wall - nut_d / 2])
+    startx = (rods_distance / 2 - rod_d / 2 - wall - nut_d / 2) % raster -
+             (rods_distance / 2 - rod_d / 2 - wall - nut_d / 2);
+    for (x = [startx:raster:rods_distance / 2 - rod_d / 2 - wall - nut_d / 2])
       translate([ x, -offset / 2, height / 2 - thickness - 2 * bissl ]) {
         cylinder(d = hole_d, h = thickness + 3 * bissl);
       }
 
     // lower holes
-    for (x = [startx:raster:rod_distance / 2 - thickness - nut_d / 2])
+    for (x = [startx:raster:rods_distance / 2 - thickness - nut_d / 2])
       translate([ x, offset / 2, -height / 2 - bissl ]) {
         cylinder(d = hole_d, h = thickness + 3 * bissl);
         translate([ 0, 0, wall + bissl ])
@@ -113,21 +115,23 @@ module double_clamp(rod_d = 15, rod_distance = 60, depth = 10, wall = 3,
 
     // remove screwdriver collision
     translate([
-      -(rod_distance - 2 * thickness) / 2, -depth / 2 - offset / 2, -height / 2
-    ]) cube([ rod_distance - 2 * thickness, offset, height / 2 ]);
-    translate([ rod_distance / 2, 0, 0 ]) clamp(negative = true);
-    mirror([ 1, 0, 0 ]) translate([ rod_distance / 2, 0, 0 ])
-        clamp(negative = true);
+      -rods_distance / 2, -depth / 2 - offset / 2, -height / 2
+    ]) cube([ rods_distance, offset, height / 2 ]);
+    translate([ rods_distance / 2, 0, 0 ]) clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+        nut_d = nut_d, hole_d = hole_d, offset = offset, negative = true);
+    mirror([ 1, 0, 0 ])     translate([ rods_distance / 2, 0, 0 ]) clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+        nut_d = nut_d, hole_d = hole_d, offset = offset, negative = true);
   }
 }
 
 module clamp(rod_d = 15, depth = 10, wall = 3, nut_h = 4, nut_d = 8,
-             hole_d = 4.5, offset = 10, negative = false) {
+             hole_d = 4.5, offset = 10, negative = false, short = false) {
   thickness = wall + nut_h;
   height = rod_d + 2 * wall;
   angle = atan(offset / (height - thickness));
   d = thickness * sin(angle) + depth * cos(angle);
   h = (rod_d + 2 * wall) / cos(angle) - d * tan(angle);
+  length=short?height/2:height / 2 + d / 2;
   difference() {
     if (!negative)
       intersection() {
@@ -137,14 +141,15 @@ module clamp(rod_d = 15, depth = 10, wall = 3, nut_h = 4, nut_d = 8,
                           [ 0, -offset / 2, height / 2 - thickness / 2 ],
                           [ 0, offset / 2, -height / 2 + thickness / 2 ],
                         ]) translate(tr)
-            cube([ rod_distance, depth, thickness ], center = true);
+            cube([ rods_distance, depth, thickness ], center = true);
         union() {
           rotate([ 90, 0, 0 ])
               cylinder(d = rod_d + 2 * wall, h = depth + offset,
                        center = true); // outer cylinder shape
-          hull() for (x = [ 0, height / 2 + d / 2 ]) translate([ x, 0, 0 ])
-              rotate([ angle, 0, 0 ]) cylinder(
-                  d = d, h = h, center = true); // tightening protrusion
+          rotate([ angle, 0, 0 ]) { // tightening protrusion
+            translate([ length, 0, 0 ]) cylinder(d = d, h = h, center = true);
+            translate([0,-d/2,-h/2])cube([length,d,h]);
+          }
         }
       }
     union() {
@@ -154,22 +159,31 @@ module clamp(rod_d = 15, depth = 10, wall = 3, nut_h = 4, nut_d = 8,
           translate([ 0, -d / 2 - bissl, -(h - 2 * thickness) / 2 ]) cube([
             d + height / 2, d + 2 * bissl, h - 2 * thickness
           ]); // tightening gap
-      rotate([ angle, 0, 0 ]) translate([ height / 2 + d / 2, 0, 0 ])
+      rotate([ angle, 0, 0 ]) translate([ length, 0, 0 ])
           cylinder(d = hole_d, h = h + bissl, center = true); // tightening hole
       rotate([ angle, 0, 0 ])
-          translate([ height / 2 + d / 2, 0, (h - 2 * thickness) / 2 + wall ])
+          translate([ length, 0, (h - 2 * thickness) / 2 + wall ])
               cylinder(d = nut_d, h = h + bissl, $fn = 6); // nut insert
     }
   }
 }
 
 if (part == "spacer_skew")
-  rotate([ -90 - atan(offset / (spacer_height - wall + nut_h - nut_h)), 0, 0 ])
+  rotate([ -90 - atan(offset / (spacer_height - wall)), 0, 0 ])
       spacer(height = spacer_height, width = spacer_width, depth = part_depth,
              radius = rounding_radius, wall = wall, nut_h = nut_h,
              nut_d = nut_d, hole_d = hole_d, offset = offset, raster = raster);
+if (part == "spacer_straight")
+  rotate([90, 0, 0 ])
+      spacer(height = spacer_height, width = spacer_width, depth = part_depth,
+             radius = rounding_radius, wall = wall, nut_h = nut_h,
+             nut_d = nut_d, hole_d = hole_d, offset = 0, raster = raster);
 if (part == "double_clamp_skew")
-  double_clamp();
+  rotate([-90 - atan(offset / (rod_d+2*wall - wall - nut_h)),0,0])double_clamp(rod_d = rod_d, rods_distance = rods_distance, depth = part_depth, wall = wall,
+                    nut_h = nut_h, nut_d = nut_d, hole_d = hole_d, offset = offset, raster = raster);
+if (part == "double_clamp_straight")
+  rotate([90,0,0])double_clamp(rod_d = rod_d, rods_distance = rods_distance, depth = part_depth, wall = wall,
+                    nut_h = nut_h, nut_d = nut_d, hole_d = hole_d, offset = 0, raster = raster, extraflat = false, short = true);
 if (part == "single_clamp")
-  clamp(rod_d = rod_d, depth = part_depth, wall = wall, nut_h = nut_h,
-        nut_d = nut_d, hole_d = hole_d, offset = offset);
+  rotate([90,0,0])clamp(rod_d = rod_d, depth = part_depth, wall = wall, nut_h = nut_h,
+        nut_d = nut_d, hole_d = hole_d, offset = 0, short = true);

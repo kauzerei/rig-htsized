@@ -1,4 +1,4 @@
-use<tube_clamps.scad>
+use<rod_mounts.scad>
 bissl=1/100;
 $fs=1/2;
 $fa=1/1;
@@ -10,28 +10,23 @@ thickness=6;
 offset=85;
 wiggle_room=10;
 rods_distance=60;
-rod_diameter=15;
+rod_d=15;
 wall=3;
 width=31;
 free_space_depth=3;
 free_space_diameter=106;
-d_bolt=4.5;
+hole_d=4.5;
+nut_d=8;
+nut_h=4;
 difference() {
   union() {
     cylinder(d=70,h=thickness+1.5+2);
     translate([0,0,thickness])cylinder(h=2,d1=70,d2=74);
-    hull() {
-    cylinder(d=rod_diameter+2*wall,h=thickness+2*bissl);
-    translate([-rods_distance/2,-offset,0])cylinder(d=rod_diameter+2*wall,h=thickness);
-    }
-    hull() {
-    cylinder(d=rod_diameter+2*wall,h=thickness+2*bissl);
-    translate([rods_distance/2,-offset,0])cylinder(d=rod_diameter+2*wall,h=thickness);
-    }
- }
+    rotate([0,0,180-atan(rods_distance/offset/2)])translate([-rod_d/2-wall,0,0])cube([rod_d+2*wall,norm([offset,rods_distance/2]),thickness+2*bissl]);
+    rotate([0,0,180+atan(rods_distance/offset/2)])translate([-rod_d/2-wall,0,0])cube([rod_d+2*wall,norm([offset,rods_distance/2]),thickness+2*bissl]);
+  }
+  for (m=[[0,0,0],[1,0,0]]) mirror(m)translate([rods_distance/2,-offset,5])rotate([-90,0,0]) clamp(rod_d = rod_d, depth = 10, wall = wall, nut_h = nut_h, nut_d = nut_d, hole_d = hole_d, offset = 0,negative=true);
   translate([0,0,-bissl]) cylinder(d=65,h=thickness+1.5+2+2*bissl);
-  for (m=[[0,0,0],[1,0,0]]) mirror(m)translate([-rods_distance/2,-offset,-bissl])cylinder(d=rod_diameter+2*wall,h=thickness+2*bissl);  
+  for (m=[[0,0,0],[1,0,0]]) mirror(m)translate([-rods_distance/2,-offset,-bissl])cylinder(d=rod_d+2*wall,h=thickness+2*bissl);  
 }
-for (m=[[0,0,0],[1,0,0]]) mirror(m)translate([-rods_distance/2,-offset,5])rotate([0,0,90])clamp(d_tube = rod_diameter, h_ring = 10, wall = wall, d_bolt = d_bolt,
-        offset = 1, nut = true, d_nut = 2*d_bolt, coupling = false,
-        bcd = 0, n_screws = 0, d_circle = 0); 
+for (m=[[0,0,0],[1,0,0]]) mirror(m)translate([rods_distance/2,-offset,5])rotate([-90,0,0]) clamp(rod_d = rod_d, depth = 10, wall = wall, nut_h = nut_h, nut_d = nut_d, hole_d = hole_d, offset = 0);
