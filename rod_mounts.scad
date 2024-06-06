@@ -1,7 +1,7 @@
 $fn = 64;
 bissl = 1 / 100;
 alot = 200 / 1;
-part = "spacer_skew"; //[spacer_skew,spacer_straight,double_clamp_skew,double_clamp_straight,single_clamp]
+part = "spacer_skew"; //[spacer_skew, spacer_straight, double_clamp_skew, double_clamp_nut_mount, double_clamp_bolt_mount, double_clamp_side_mount, single_clamp]
 
 /* [global part parameters] */
 part_depth = 10;
@@ -22,6 +22,10 @@ rod_d = 15;
 spacer_height = 35;
 spacer_width = 60;
 rounding_radius = 5;
+
+/* [side mount parameters:] */
+side_mount_thickness=5;
+side_mount_width=32;
 
 module spacer(height = 35, width = 60, depth = 10, radius = 5, wall = 2,
               nut_h = 4, nut_d = 8, hole_d = 4.5, offset = 10, raster = 10) {
@@ -75,7 +79,7 @@ module spacer(height = 35, width = 60, depth = 10, radius = 5, wall = 2,
 
 module double_clamp(rod_d = 15, rods_distance = 60, depth = 10, wall = 3,
                     nut_h = 4, nut_d = 8, hole_d = 4.5, offset = 10,
-                    raster = 10, extraflat = true, short = false) {
+                    raster = 10, extraflat = true, short = false, nut_side=true, bolt_side=true) {
   thickness = wall + nut_h;
   height = rod_d + 2 * wall;
   mirror([ 0, 0, 0 ]) translate([ rods_distance / 2, 0, 0 ])
@@ -85,12 +89,9 @@ module double_clamp(rod_d = 15, rods_distance = 60, depth = 10, wall = 3,
       clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
             nut_d = nut_d, hole_d = hole_d, offset = offset, short = short);
   difference() {
-    union() {
-      hull() for (tr = [
-                        [ 0, -offset / 2, height / 2 - thickness / 2 ],
-                        [ 0, offset / 2, -height / 2 + thickness / 2 ],
-                      ]) translate(tr)
-          cube([ rods_distance, depth, thickness ], center = true);
+    hull() {
+      if(nut_side)translate([ 0, offset / 2, -height / 2 + thickness / 2 ]) cube([ rods_distance, depth, thickness ], center = true);
+      if(bolt_side)translate([ 0, -offset / 2, height / 2 - thickness / 2 ]) cube([ rods_distance, depth, thickness ], center = true);
     }
     flat = extraflat ? (part_depth - nut_d) / 2
                      : 0; // extra flat space for ease of printing.
@@ -124,6 +125,37 @@ module double_clamp(rod_d = 15, rods_distance = 60, depth = 10, wall = 3,
     mirror([ 1, 0, 0 ]) translate([ rods_distance / 2, 0, 0 ])
         clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
               nut_d = nut_d, hole_d = hole_d, offset = offset, negative = true);
+  }
+}
+
+module double_clamp_side_mount(rod_d = 15, rods_distance = 60, depth = 10, wall = 3,
+                    nut_h = 4, nut_d = 8, hole_d = 4.5, raster = 10, thickness, width) {
+  difference() {
+    union() {
+      mirror([ 0, 0, 0 ]) translate([ rods_distance / 2, 0, 0 ])
+      clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+            nut_d = nut_d, hole_d = hole_d, offset = 0, short = true);
+      mirror([ 1, 0, 0 ]) translate([ rods_distance / 2, 0, 0 ])
+      clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+            nut_d = nut_d, hole_d = hole_d, offset = 0, short = true);
+    cube([rods_distance,depth,rod_d+2*wall],center=true);
+    }
+    mirror([ 0, 0, 0 ]) translate([ rods_distance / 2, 0, 0 ])
+      clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+            nut_d = nut_d, hole_d = hole_d, offset = 0, short = true, negative = true);
+    mirror([ 1, 0, 0 ]) translate([ rods_distance / 2, 0, 0 ])
+      clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+            nut_d = nut_d, hole_d = hole_d, offset = 0, short = true, negative = true);
+    translate([0,wall+nut_h,0])cube([width,depth+bissl,rod_d+2*wall+bissl],center=true);
+    startx = (rods_distance / 2 - rod_d / 2 - wall - nut_d / 2) % raster -
+             (rods_distance / 2 - rod_d / 2 - wall - nut_d / 2);
+    for (x = [startx:raster:rods_distance / 2 - thickness - nut_d / 2])
+      rotate([-90,0,0])translate([ x, 0, -depth/2 - bissl ]) {
+        cylinder(d = hole_d, h = depth);
+        translate([ 0, 0, 0 ])
+            cylinder(d = nut_d, h = nut_h, $fn = 6);
+      }
+
   }
 }
 
@@ -194,3 +226,14 @@ if (part == "single_clamp")
   rotate([ 90, 0, 0 ])
       clamp(rod_d = rod_d, depth = part_depth, wall = wall, nut_h = nut_h,
             nut_d = nut_d, hole_d = hole_d, offset = 0, short = true);
+if (part == "double_clamp_nut_mount") rotate([90, 0, 0]) double_clamp(rod_d = rod_d, rods_distance = rods_distance,
+                   depth = part_depth, wall = wall, nut_h = nut_h,
+                   nut_d = nut_d, hole_d = hole_d, offset = 0, raster = raster,
+                   extraflat = false, short = true, bolt_side=false);
+if (part == "double_clamp_bolt_mount") rotate([90, 0, 0]) double_clamp(rod_d = rod_d, rods_distance = rods_distance,
+                   depth = part_depth, wall = wall, nut_h = nut_h,
+                   nut_d = nut_d, hole_d = hole_d, offset = 0, raster = raster,
+                   extraflat = false, short = true, nut_side=false);
+if (part == "double_clamp_side_mount") rotate([-90, 0, 0]) double_clamp_side_mount(rod_d = rod_d, rods_distance = rods_distance,
+                   depth = wall+nut_h+side_mount_thickness, wall = wall, nut_h = nut_h,
+                   nut_d = nut_d, hole_d = hole_d, raster = raster, thickness = side_mount_thickness, width = side_mount_width);
