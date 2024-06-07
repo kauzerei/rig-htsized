@@ -10,7 +10,7 @@ wall = 1.6;
 contact_width = 1.6;
 contact_depth = 1.6;
 battery_d = 19;
-battery_l = 65;
+battery_l = 64.5;
 n=4;
 
 module arc(radius, thickness, start, end, $fn = $fn) {
