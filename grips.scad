@@ -5,8 +5,15 @@ function decimate(poly, m) =
         ? decimate([ poly[0], for (i = [2:len(poly) - 1]) poly[i] ], m)
         : [ poly[0], each decimate([for (i = [1:len(poly) - 1]) poly[i]], m) ];
 $fn = 64 / 1;
+bissl = 1 / 100;
 thickness = 30;
-part = "side_handle"; //[side_handle,tube_handle]
+rosette_mount_length = 20;
+slot = 12;
+nut_d = 9;
+nut_h = 4;
+wall = 3.2;
+hole_d = 4.5;
+part = "side_handle"; //[side_handle,tube_handle,handle_rosette_mount]
 module skew_extrude(list, d, reverse) {
   for (i = [0:len(list) - 2]) {
     startx = list[i][0];
@@ -41,12 +48,23 @@ module side_handle() {
   difference() {
     handle(front, back, thickness);
     hull() for (tr = [ [ -31, 0, 10 ], [ 2, 0, 80 ] ]) translate(tr)
-        rotate([ 90, 0, 0 ]) cylinder(d = 5, h = 31, center = true);
-    hull() for (tr = [ [ -31, -1.6, 10 ], [ 2, -1.6, 80 ] ]) translate(tr)
-        rotate([ 90, 0, 0 ]) cylinder(d = 12, h = 31);
-    hull() for (tr = [ [ -31, 1.6, 10 ], [ 2, 1.6, 80 ] ]) translate(tr)
-        rotate([ -90, 0, 0 ]) cylinder(d = 12, h = 31);
+        rotate([ 90, 0, 0 ]) cylinder(d = hole_d, h = 31, center = true);
+    hull() for (tr = [ [ -31, -1.6, 10 ], [ 2, -wall / 2, 80 ] ]) translate(tr)
+        rotate([ 90, 0, 0 ]) cylinder(d = slot, h = 31);
+    hull() for (tr = [ [ -31, 1.6, 10 ], [ 2, wall / 2, 80 ] ]) translate(tr)
+        rotate([ -90, 0, 0 ]) cylinder(d = hole_d, h = 31);
+  }
+}
+module handle_rosette_mount() {
+  difference() {
+    cube([ 30, slot - 1, rosette_mount_length ]);
+    for (tr = [ [ 5, (slot-1)/2, -bissl ], [ 15, (slot-1)/2, -bissl ], [ 25, (slot-1)/2, -bissl ] ])
+      translate(tr) cylinder(d = hole_d, h = rosette_mount_length + 2 * bissl);
+    for (tr = [[ 5, (slot-1)/2, wall ],[25, (slot-1)/2, wall]])
+      translate(tr) cylinder(d = nut_d, h = rosette_mount_length,$fn=6);
   }
 }
 if (part == "side_handle")
   side_handle();
+if (part == "handle_rosette_mount")
+  handle_rosette_mount();
