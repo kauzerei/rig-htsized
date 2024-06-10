@@ -90,5 +90,4 @@ module holders(battery_l, battery_d, wall, contact_depth, contact_width, n=1) {
   for (i = [0:n - 1])
     translate([ 0, i * (battery_d + wall), 0 ]) holder(battery_l, battery_d, wall, contact_depth, contact_width);
 }
-
 holders(battery_l=battery_l, battery_d=battery_d, wall=wall, contact_depth=contact_depth, contact_width=contact_width, n=n);

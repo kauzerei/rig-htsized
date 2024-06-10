@@ -7,7 +7,8 @@ function decimate(poly, m) =
 $fn = 64 / 1;
 bissl = 1 / 100;
 thickness = 30;
-rosette_mount_length = 20;
+rosette_mount_length = 32;
+rosette_mount_offset=30;
 slot = 12;
 nut_d = 9;
 nut_h = 4;
@@ -57,11 +58,11 @@ module side_handle() {
 }
 module handle_rosette_mount() {
   difference() {
-    cube([ 30, slot - 1, rosette_mount_length ]);
-    for (tr = [ [ 5, (slot-1)/2, -bissl ], [ 15, (slot-1)/2, -bissl ], [ 25, (slot-1)/2, -bissl ] ])
-      translate(tr) cylinder(d = hole_d, h = rosette_mount_length + 2 * bissl);
-    for (tr = [[ 5, (slot-1)/2, wall ],[25, (slot-1)/2, wall]])
-      translate(tr) cylinder(d = nut_d, h = rosette_mount_length,$fn=6);
+    cube([ rosette_mount_length, slot - 1, rosette_mount_offset ]);
+    for (tr = [ [ rosette_mount_length/2-10, (slot-1)/2, -bissl ], [ rosette_mount_length/2, (slot-1)/2, -bissl ], [ rosette_mount_length/2+10, (slot-1)/2, -bissl ] ])
+      translate(tr) cylinder(d = hole_d, h = rosette_mount_offset + 2 * bissl);
+    for (tr = [[ rosette_mount_length/2-10, (slot-1)/2, wall ],[rosette_mount_length/2+10, (slot-1)/2, wall]])
+      translate(tr) cylinder(d = nut_d, h = rosette_mount_offset,$fn=6);
   }
 }
 if (part == "side_handle")
