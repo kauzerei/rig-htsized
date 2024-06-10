@@ -14,7 +14,7 @@ nut_d = 9;
 nut_h = 4;
 wall = 3.2;
 hole_d = 4.5;
-part = "side_handle"; //[side_handle,tube_handle,handle_rosette_mount]
+part = "side_handle"; //[side_handle, tube_handle, handle_rosette_mount, handle_screw_washer]
 module skew_extrude(list, d, reverse) {
   for (i = [0:len(list) - 2]) {
     startx = list[i][0];
@@ -53,9 +53,10 @@ module side_handle() {
     hull() for (tr = [ [ -31, -1.6, 10 ], [ 2, -wall / 2, 80 ] ]) translate(tr)
         rotate([ 90, 0, 0 ]) cylinder(d = slot, h = 31);
     hull() for (tr = [ [ -31, 1.6, 10 ], [ 2, wall / 2, 80 ] ]) translate(tr)
-        rotate([ -90, 0, 0 ]) cylinder(d = hole_d, h = 31);
+        rotate([ -90, 0, 0 ]) cylinder(d = slot, h = 31);
   }
 }
+
 module handle_rosette_mount() {
   difference() {
     cube([ rosette_mount_length, slot - 1, rosette_mount_offset ]);
@@ -65,7 +66,33 @@ module handle_rosette_mount() {
       translate(tr) cylinder(d = nut_d, h = rosette_mount_offset,$fn=6);
   }
 }
+
+module handle_screw_washer() {
+  difference() {
+    cube([slot - 1, rosette_mount_length, wall], center = true);
+    cylinder(d = hole_d, h = wall + bissl, center = true);
+  }
+}
+
+module tube_handle() {
+  front = [
+    [0, 17], [12, 12], [24, 15], [33, 14], [47, 19], [57, 17], [72, 22], [83, 20], [100, 25]                       
+  ];
+  back = [
+    [0, -23], [12, -23], [25, -23], [33, -23], [47, -19], [57, -15], [72, -12], [83, -12], [100, -15]
+  ];
+  difference() {
+    handle(back, front, thickness);
+    translate([0, 0, wall]) cylinder(d = 16, h = 100);
+    translate([0, 0, -bissl]) cylinder(d = hole_d, h = wall + 2 *bissl);
+  }
+}
+
 if (part == "side_handle")
   side_handle();
 if (part == "handle_rosette_mount")
   handle_rosette_mount();
+if (part == "handle_screw_washer")
+  handle_screw_washer();
+if (part == "tube_handle")
+  tube_handle();

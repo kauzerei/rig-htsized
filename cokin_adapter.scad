@@ -1,3 +1,5 @@
+//Mount for Cokin 84mm filter holder
+//To be used with clamp with side mount
 bissl = 1 / 100;
 $fs = 1 / 2;
 $fa = 1 / 1;

@@ -1,4 +1,4 @@
-// This is tripod cheese plate
+// Tripod cheese plate
 // Made for Zhiyun Crane 2, but it looks like regular Manfrotto 501 Plate
 // I decided to make everything customizable, because lots of plates on
 // Thingiverse have different dimensions. I've printed one of them and it was

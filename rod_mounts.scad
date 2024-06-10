@@ -1,3 +1,4 @@
+//Everything that has to do with mounting 
 $fn = 64;
 bissl = 1 / 100;
 alot = 200 / 1;
@@ -226,14 +227,19 @@ if (part == "single_clamp")
   rotate([ 90, 0, 0 ])
       clamp(rod_d = rod_d, depth = part_depth, wall = wall, nut_h = nut_h,
             nut_d = nut_d, hole_d = hole_d, offset = 0, short = true);
-if (part == "double_clamp_nut_mount") rotate([90, 0, 0]) double_clamp(rod_d = rod_d, rods_distance = rods_distance,
-                   depth = part_depth, wall = wall, nut_h = nut_h,
-                   nut_d = nut_d, hole_d = hole_d, offset = 0, raster = raster,
-                   extraflat = false, short = true, bolt_side=false);
-if (part == "double_clamp_bolt_mount") rotate([90, 0, 0]) double_clamp(rod_d = rod_d, rods_distance = rods_distance,
-                   depth = part_depth, wall = wall, nut_h = nut_h,
-                   nut_d = nut_d, hole_d = hole_d, offset = 0, raster = raster,
-                   extraflat = false, short = true, nut_side=false);
-if (part == "double_clamp_side_mount") rotate([-90, 0, 0]) double_clamp_side_mount(rod_d = rod_d, rods_distance = rods_distance,
-                   depth = wall+nut_h+side_mount_thickness, wall = wall, nut_h = nut_h,
-                   nut_d = nut_d, hole_d = hole_d, raster = raster, thickness = side_mount_thickness, width = side_mount_width);
+if (part == "double_clamp_nut_mount") rotate([90, 0, 0]) 
+    double_clamp(rod_d = rod_d, rods_distance = rods_distance,
+                 depth = part_depth, wall = wall, nut_h = nut_h,
+                 nut_d = nut_d, hole_d = hole_d, offset = 0, raster = raster,
+                 extraflat = false, short = true, bolt_side=false);
+if (part == "double_clamp_bolt_mount") rotate([90, 0, 0]) 
+    double_clamp(rod_d = rod_d, rods_distance = rods_distance,
+                 depth = part_depth, wall = wall, nut_h = nut_h,
+                 nut_d = nut_d, hole_d = hole_d, offset = 0, raster = raster,
+                 extraflat = false, short = true, nut_side=false);
+if (part == "double_clamp_side_mount") rotate([-90, 0, 0]) 
+    double_clamp_side_mount(rod_d = rod_d, rods_distance = rods_distance,
+                            depth = wall+nut_h+side_mount_thickness,
+                            wall = wall, nut_h = nut_h, nut_d = nut_d, 
+                            hole_d = hole_d, raster = raster,
+                            thickness = side_mount_thickness, width = side_mount_width);

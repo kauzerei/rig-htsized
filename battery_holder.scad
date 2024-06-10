@@ -1,3 +1,4 @@
+//Holder for 2x18650 batteries with hole raster to be mounted onto camera cage
 bissl = 1 / 100;
 $fn = 64 / 1;
 
