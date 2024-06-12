@@ -1,7 +1,14 @@
 # Htsized Rig
-Customizable 3d-printable parts for building RigHtsized camera Rig. 
+Customizable 3d-printable parts for building RigHtsized camera Rig.
 
-###File tree structure:
+Build the cage tailored to your particular camera.
+Doesn't matter if it's too old, too new or too obscure for existing cage to be available.
+Follow any cinema standard, or not, the customizeable models are not here to judge.
+You may use the rods of any diameter you want or already have lying around.
+The camera may be any distance from the rods.
+The parts can be as thin or as thick as you like.
+
+### File tree structure:
 'cameras' - 3d-scans of digital cameras used to generate cages.
 
 'scad' - OpenSCAD models of parts
@@ -54,3 +61,19 @@ They may slightly differ from original Manfrotto design, that's why the model is
 You can change width and height of the mechanical features to fit the shape of your gear, try on shorter length to save material.
 You can change the length to fit the amount of your gear: use longer plate if you use wide range of lens/accessories masses to always be able to slide the plate in tripod/stab to find balance without unscrewing the plate from the camera.
 
+## Battery holder
+Mount 18650 batteries to the camera cage.
+Power any other equipment from the same easily swappable power source.
+
+## Arm
+Arm for mounting something some distance from the rod.
+Used for mounting the monitor to an additional rod.
+Take it with caution as work in progress.
+
+## Rosette
+Use cinema standard hirth joint to mount something at an adjustable angle.
+Compatible with existing grips, monitor mounts, etc.
+
+## Cokin adapter
+Mounts the Cokin Series P filter holder to the rails.
+Use Cokin Series P accessories as a matte box.
