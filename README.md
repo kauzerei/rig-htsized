@@ -1,5 +1,22 @@
 # Htsized Rig
 Customizable 3d-printable parts for building RigHtsized camera Rig. 
+
+###File tree structure:
+'cameras' - 3d-scans of digital cameras used to generate cages.
+
+'scad' - OpenSCAD models of parts
+
+'scad/include' - External files used in some of the models.
+Some are written by me, some copied from Internet.
+See the contents of files to find the source.
+
+'drafts' - OpenSCAD models that are kinda offtopic, but still somewhat fit here. 
+Some are too specific for random pieces of equipment I own.
+Some are designed but not used in the context of my rigs.
+
+'stl_export' - stl files generated from the models. Not necessarily from the latest version of models
+It's beter if you generate them from models, but I'll keep them also here for now.
+
 ## Rightsized cage
 The idea is to use a 3d-model of a camera (for example by 3d-scanning it using photogrammetry) and helper functions to define the perfect shape of a cage, that fits specifically your camera and your vision of comfort.
 
