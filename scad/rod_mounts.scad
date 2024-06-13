@@ -2,7 +2,7 @@
 $fn = 64;
 bissl = 1 / 100;
 alot = 200 / 1;
-part = "spacer_skew"; //[spacer_skew, spacer_straight, double_clamp_skew, double_clamp_nut_mount, double_clamp_bolt_mount, double_clamp_side_mount, single_clamp]
+part = "spacer_skew"; //[spacer_skew, spacer_straight, double_clamp_skew, double_clamp_nut_mount, double_clamp_bolt_mount, double_clamp_side_mount, single_clamp, focus_motor_clamp]
 
 /* [global part parameters] */
 part_depth = 10;
@@ -27,6 +27,7 @@ rounding_radius = 5;
 /* [side mount parameters:] */
 side_mount_thickness=5;
 side_mount_width=32;
+tuning_length=60;
 
 module spacer(height = 35, width = 60, depth = 10, radius = 5, wall = 2,
               nut_h = 4, nut_d = 8, hole_d = 4.5, offset = 10, raster = 10) {
@@ -150,13 +151,26 @@ module double_clamp_side_mount(rod_d = 15, rods_distance = 60, depth = 10, wall 
     translate([0,wall+nut_h,0])cube([width,depth+bissl,rod_d+2*wall+bissl],center=true);
     startx = (rods_distance / 2 - rod_d / 2 - wall - nut_d / 2) % raster -
              (rods_distance / 2 - rod_d / 2 - wall - nut_d / 2);
-    for (x = [startx:raster:rods_distance / 2 - thickness - nut_d / 2])
+    for (x = [startx:raster:rods_distance / 2 - rod_d / 2 - wall - nut_d / 2])
       rotate([-90,0,0])translate([ x, 0, -depth/2 - bissl ]) {
         cylinder(d = hole_d, h = depth);
         translate([ 0, 0, 0 ])
             cylinder(d = nut_d, h = nut_h, $fn = 6);
       }
+  }
+}
 
+module focus_motor_clamp(rod_d = 15, tuning_length = 60, depth = 10, wall = 3,
+                    nut_h = 4, nut_d = 8, hole_d = 4.5, raster = 10, thickness) {
+  difference() {
+    union() {
+      clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+            nut_d = nut_d, hole_d = hole_d, offset = 0, short = true);
+      translate([-tuning_length-rod_d/2-2*wall-hole_d,-depth/2,-rod_d/2-wall])cube([tuning_length+rod_d+2*wall+hole_d/2,depth,thickness]);
+    }
+    clamp(rod_d = rod_d, depth = depth, wall = wall, nut_h = nut_h,
+            nut_d = nut_d, hole_d = hole_d, offset = 0, short = true, negative = true);
+    hull() for (tr = [[-rod_d/2-wall-hole_d/2-tuning_length,0,-rod_d/2-wall-bissl],[-rod_d/2-wall-hole_d/2,0,-rod_d/2-wall-bissl]]) translate(tr)cylinder(d=hole_d,h=thickness+2*bissl); 
   }
 }
 
@@ -243,3 +257,9 @@ if (part == "double_clamp_side_mount") rotate([-90, 0, 0])
                             wall = wall, nut_h = nut_h, nut_d = nut_d, 
                             hole_d = hole_d, raster = raster,
                             thickness = side_mount_thickness, width = side_mount_width);
+if (part == "focus_motor_clamp") rotate([-90, 0, 0]) 
+    focus_motor_clamp(rod_d = rod_d, tuning_length=tuning_length,
+                            depth = wall+nut_h+side_mount_thickness,
+                            wall = wall, nut_h = nut_h, nut_d = nut_d, 
+                            hole_d = hole_d, raster = raster,
+                            thickness = side_mount_thickness);
