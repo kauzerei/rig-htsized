@@ -51,7 +51,7 @@ if (markers && $preview)
 module camera() {
   difference() {
     scale([ 1.01, 1.01, 1.01 ]) translate([ 17.5, -13.8, 25.2 ])
-        rotate([ 0, 0, 90 ]) import("cameras/Sony_NEX-F3.stl", convexity = 6);
+        rotate([ 0, 0, 90 ]) import("../cameras/Sony_NEX-F3.stl", convexity = 6);
     translate([ -100, -100, -10 ]) cube([ 200, 200, 10 ]);
   }
 }
