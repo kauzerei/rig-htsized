@@ -4,7 +4,7 @@ $fs = 1 / 2;
 bissl = 1 / 100;
 
 part = "motor_bracket"; //[motor_bracket,motor_cover,motor_gear,external_gear,NOSTL_assembly]
-
+/*[motor parameters]*/
 motor_width = 35.3;
 motor_mount_square = 26;
 motor_mount_d = 3.5; // added +0.5 tolerance
@@ -12,10 +12,12 @@ motor_axle = 5;
 motor_cylinder_h = 2;
 motor_cylinder_d = 23; // added +1 tolerance
 
+/*[bearing parameters]*/
 bearing_id = 8;
 bearing_od = 22;
 bearing_h = 7;
 
+/*[hardware_parameters]*/
 hole_d = 4.5;
 nut_d = 8;
 nut_h = 4;
@@ -23,10 +25,11 @@ part_depth = 10;
 step_h = (part_depth - bearing_h) / 2;
 step_w = 1.6;
 wall = 1.6;
-
+ /*[gear parameters]*/
 gear_module = 0.8;
+extra_distance = 0.5;
 total_teeth = floor(motor_mount_square * sqrt(2) / gear_module);
-axial_distance = total_teeth * gear_module / 2;
+axial_distance = total_teeth * gear_module / 2 + extra_distance;
 teeth_motor = 12;
 teeth_offset = total_teeth - teeth_motor;
 
@@ -99,12 +102,15 @@ if (part == "motor_cover")
 if (part == "motor_gear")
   gear(0.8 * 3.1415926, teeth_motor, part_depth, 5);
 if (part == "external_gear")
-  gear(0.8 * 3.1415926, teeth_offset, part_depth - 1, bearing_od);
+  difference(){
+    gear(0.8 * 3.1415926, teeth_offset, bearing_h, 0);
+    cylinder(d = bearing_od, h = part_depth, center = true);
+  }
 if (part == "NOSTL_assembly") {
   translate([ 0, 0, part_depth / 2 - (part_depth + wall) / 2 ]) motor_bracket();
   translate([ 0, 0, part_depth / 2 + wall - (2 * wall + step_h) / 2 ])
       mirror([ 0, 0, 1 ]) motor_cover();
   gear(0.8 * 3.1415926, teeth_motor, part_depth, 5);
   translate([ axial_distance * sqrt(0.5), axial_distance * sqrt(0.5), 0 ])
-      gear(0.8 * 3.1415926, teeth_offset, part_depth - 1, bearing_od);
+      gear(0.8 * 3.1415926, teeth_offset, bearing_h, bearing_od);
 }
