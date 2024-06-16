@@ -216,7 +216,7 @@ module clamp(rod_d = 15, depth = 10, wall = 3, nut_h = 4, nut_d = 8,
 }
 
 if (part == "spacer_skew")
-  rotate([ -90 - atan(offset / (spacer_height - wall)), 0, 0 ])
+  rotate([ -90 - atan(offset / (spacer_height - wall - nut_h)), 0, 0 ])
       spacer(height = spacer_height, width = spacer_width, depth = part_depth,
              radius = rounding_radius, wall = wall, nut_h = nut_h,
              nut_d = nut_d, hole_d = hole_d, offset = offset, raster = raster);
