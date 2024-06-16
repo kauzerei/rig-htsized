@@ -7,7 +7,7 @@
 thickness = 0.5;
 // vertical distance between mounting plate and lowest point of teeth, place for
 // head of a screw
-screw_head_space = 3;
+screw_head_space = 3.0;
 // diameter of lowered part
 screw_side_space_diameter = 16;
 // diameter of mounting circle
@@ -15,11 +15,11 @@ bcd = 20;
 // number of screws in circle
 n_screws = 4;
 // diameter of central hole
-d_center = 4;
+d_center = 4.0;
 // diameter of mounting holes
-d_circle = 4;
+d_circle = 4.0;
 // diameter of screw head
-d_head = 9;
+d_head = 9.0;
 // conical/cylindrical screw head switch
 cylindrical = false;
 // STANDARD IS 60, other numbers are not Arri-conpatible. Number of detents
