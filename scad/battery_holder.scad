@@ -8,10 +8,30 @@ contact_depth = 1.6;
 battery_d = 19;
 battery_l = 64;
 
+jack_d=8;
+box_w=19;
+box_l=battery_l+2*contact_depth;
+switch_offset=10;
+jack_offsets=[30,45,60];
+pcb_thickness=5;
+
+module switch_hole() {
+  square([6,4],center=true);
+  translate([-6,0]) circle(d=4);
+  translate([6,0]) circle(d=4);
+}
+
 use<include/battery_holder_double_spring.scad>
 difference() {
   holders(battery_l=battery_l, battery_d=battery_d, wall=wall, contact_depth=contact_depth, contact_width=contact_width, n=2);
   for (x = [13.5:20:60])
     for (y = [11:20:31])
       translate([ x, y, -bissl ]) cylinder(d1 = 6, d2 = 10, h = 2);
+}
+difference() {
+  translate([-wall,-box_w-wall,0]) cube([box_l+2*wall,box_w+wall,battery_d+wall]);
+  translate([0,-box_w+bissl,wall]) cube([box_l,box_w,battery_d+bissl]);
+  translate([switch_offset,-box_w+2*bissl,wall+(battery_d+pcb_thickness)/2])rotate([90,0,0])linear_extrude(height=wall+3*bissl) switch_hole();
+  for (offset=jack_offsets) translate([offset,-box_w+2*bissl,wall+(battery_d+pcb_thickness)/2])
+                            rotate([90,0,0]) linear_extrude(height=wall+3*bissl) circle(d=jack_d);
 }
