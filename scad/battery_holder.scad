@@ -7,6 +7,10 @@ spring_height=14.5;
 wall=1.6;
 bottom=1.6;
 channel=2;
+cover_screw=3;
+insert_depth=6;
+box_width=18;
+jack_d=12;
 arc_depth=0.75*battery_d;
 arc_width=0.8*battery_l;
 arc_r=(arc_width^2+4*arc_depth^2)/arc_depth/8;
@@ -31,11 +35,35 @@ module single_cell(bd,bl,sd,st,sw,sh,w,b) {
   }
 }
 
-module screw_mount(square,circle,height) {
-
+module screw_mount(wall,d,height) {
+echo(wall);
+  difference() {
+    translate([0,0,-2*height])cube([d+wall,d+wall,height*2]);
+    translate([(d+wall),(d+wall),-height]) rotate([0,135,45])translate([0,-2*height])cube([height*4,height*4,height*4]);
+    translate([d/2,d/2,-height]) cylinder(d=d,h=height+bsl);
+  }
 }
 
-module double_battery_holder(bd,bl,sd,st,sw,sh,w,b,c) {
+module switch_hole() {
+  square([8,4],center=true);
+  translate([-7.5,0]) circle(d=3);
+  translate([7.5,0]) circle(d=3);
+}
+
+module box(width,depth,height,wall,bottom,insert_d,insert_h) {
+  difference() {
+    translate([0,-width-wall,0]) cube([depth+2*wall,width+wall,height+bottom]);
+    translate([wall,-width,bottom]) cube([depth,width+bsl,height+bsl]);
+    translate([-bsl,-width/2,bottom+height/2])rotate([0,90,0])linear_extrude(height=wall+2*bsl) switch_hole();
+    for (tr=[15:16:70]) translate([tr,-width+bsl,bottom+height/2]) rotate([90,0,0]) cylinder(d=jack_d,h=wall+2*bsl);
+  }
+  translate([wall,0,height+bottom])rotate([0,0,-90]) screw_mount(wall=wall,d=insert_d,height=insert_h);
+  translate([wall,-width,height+bottom])rotate([0,0,0]) screw_mount(wall=wall,d=insert_d,height=insert_h);
+  translate([wall+depth,0,height+bottom])rotate([0,0,180]) screw_mount(wall=wall,d=insert_d,height=insert_h);
+  translate([wall+depth,-width,height+bottom])rotate([0,0,90]) screw_mount(wall=wall,d=insert_d,height=insert_h);
+}
+
+module double_battery_holder(bd,bl,sd,st,sw,sh,w,b,c,ih,id) {
   difference() {
     union() {
       single_cell(bd=bd,bl=bl,sd=sd,st=st,sw=sw,sh=sh,w=w,b=b);
@@ -47,9 +75,10 @@ module double_battery_holder(bd,bl,sd,st,sw,sh,w,b,c) {
               [w+st+w+c/2+bl+2*sd-2*st-2*w-c,w/2+bd+w,w+c/2],
              ]) translate(tr) rotate([-90,0,0])cylinder(d=c,h=w+bsl,center=true);
   }
+  box(width=box_width,depth=bl+2*sd,height=bd,wall=w,bottom=b,insert_d=id,insert_h=ih);
 }
 
 
 //single_cell(bd=battery_d,bl=battery_l,sd=spring_depth,st=spring_thickness,sw=spring_width,sh=spring_height,w=wall,b=bottom);
 //spring_cutout(sd=spring_depth,st=spring_thickness,sw=spring_width,sh=spring_height,bd=battery_d,w=wall);
-double_battery_holder(bd=battery_d,bl=battery_l,sd=spring_depth,st=spring_thickness,sw=spring_width,sh=spring_height,w=wall,b=bottom,c=channel);
+double_battery_holder(bd=battery_d,bl=battery_l,sd=spring_depth,st=spring_thickness,sw=spring_width,sh=spring_height,w=wall,b=bottom,c=channel,ih=insert_depth,id=cover_screw);
