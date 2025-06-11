@@ -71,10 +71,10 @@ module double_battery_holder(bd,bl,sd,st,sw,sh,w,b,c,ih,id) {
       translate([0,bd+w,0])single_cell(bd=bd,bl=bl,sd=sd,st=st,sw=sw,sh=sh,w=w,b=b);
       box(width=box_width,depth=bl+2*sd,height=bd,wall=w,bottom=b,insert_d=id,insert_h=ih);
     }
-    for (tr=[[w+st+w+c/2,w/2,w+c/2],
-              [w+st+w+c/2,w/2,w+c/2+w+c],
-              [w+st+w+c/2,w/2+bd+w,w+c/2],
-              [w+st+w+c/2+bl+2*sd-2*st-2*w-c,w/2+bd+w,w+c/2],
+    for (tr=[[w+st+w+c/2,w/2,b+c/2],
+              [w+st+w+c/2,w/2,b+c/2+w+c],
+              [w+st+w+c/2,w/2+bd+w,b+c/2],
+              [w+st+w+c/2+bl+2*sd-2*st-2*w-c,w/2+bd+w,b+c/2],
              ]) translate(tr) rotate([-90,0,0])cylinder(d=c,h=w+bsl,center=true);
     for (x=distributor(w,w+bl+2*sd,20))
     for (y=distributor(-box_width-w,bd*2+3*w,20))
