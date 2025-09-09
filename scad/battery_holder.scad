@@ -46,9 +46,12 @@ module screw_mount(wall,d,height) {
 }
 
 module switch_hole() {
+circle(d=6.5);
+/*
   square([8,4],center=true);
   translate([-7.5,0]) circle(d=3);
   translate([7.5,0]) circle(d=3);
+  */
 }
 
 module box(width,depth,height,wall,bottom,insert_d,insert_h) {
@@ -56,7 +59,10 @@ module box(width,depth,height,wall,bottom,insert_d,insert_h) {
     translate([0,-width-wall,0]) cube([depth+2*wall,width+wall,height+bottom]);
     translate([wall,-width,bottom]) cube([depth,width+bsl,height+bsl]);
     translate([-bsl,-width/2,bottom+height/2])rotate([0,90,0])linear_extrude(height=wall+2*bsl) switch_hole();
-    for (tr=distributor(wall,wall+depth,16)) translate([tr,-width+bsl,bottom+height/2]) rotate([90,0,0]) cylinder(d=jack_d,h=wall+2*bsl);
+    for (tr=distributor(wall+16,wall+depth,16)) translate([tr,-width+bsl,bottom+height/2]) rotate([90,0,0]) intersection() {
+  cylinder(d=jack_d,h=wall+2*bsl);
+  translate([-10.5/2,-jack_d/2,0]) cube([10.5,jack_d,wall+2*bsl]);
+  }
   }
   translate([wall,0,height+bottom])rotate([0,0,-90]) screw_mount(wall=wall,d=insert_d,height=insert_h);
   translate([wall,-width,height+bottom])rotate([0,0,0]) screw_mount(wall=wall,d=insert_d,height=insert_h);
